@@ -6,8 +6,15 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-only-key-change-in-production')
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    'dev-only-key-change-in-production'
+)
+
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
+
+if not DEBUG and SECRET_KEY == 'dev-only-key-change-in-production':
+    raise ValueError('DJANGO_SECRET_KEY belum diatur!')
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -15,8 +22,21 @@ ALLOWED_HOSTS = [
 ]
 
 render_host = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+
 if render_host:
     ALLOWED_HOSTS.append(render_host)
+
+CSRF_TRUSTED_ORIGINS = []
+
+if render_host:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{render_host}')
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
