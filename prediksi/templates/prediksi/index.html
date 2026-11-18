@@ -1,0 +1,792 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KosMadiun | Smart Price Prediction</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --butter: #F6E7A8;
+            --yellow: #E9C95E;
+            --cream: #FFFDF5;
+            --white: #FFFFFF;
+            --dark: #403821;
+            --brown: #756642;
+            --muted: #9A917B;
+            --border: #EFE8D4;
+            --soft: #FFF8DF;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 245px;
+            height: 100vh;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            color: var(--dark);
+            padding: 0 12px;
+        }
+
+        .logo span {
+            color: #C69D27;
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            color: var(--muted);
+            padding: 5px 12px 35px;
+            letter-spacing: 1px;
+        }
+
+        .nav-title {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 0 12px;
+            margin-bottom: 12px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--brown);
+            padding: 13px 14px;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: var(--butter);
+            color: var(--dark);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            background: var(--soft);
+            border-radius: 13px;
+            padding: 16px;
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--brown);
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 32px 40px;
+            max-width: 1600px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .topbar h2 {
+            font-size: 23px;
+        }
+
+        .topbar p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .top-label {
+            background: var(--butter);
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .hero {
+            background: linear-gradient(120deg, #F1D979, #FFF0B8);
+            padding: 38px;
+            border-radius: 20px;
+            margin-bottom: 28px;
+        }
+
+        .hero small {
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #78601E;
+            font-size: 11px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            margin: 13px 0;
+            color: #403719;
+        }
+
+        .hero p {
+            max-width: 600px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #6C5B31;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 23px;
+            box-shadow: 0 4px 15px rgba(80, 65, 25, .035);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--soft);
+            border-radius: 11px;
+            font-size: 19px;
+            margin-bottom: 17px;
+        }
+
+        .stat-card p {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 7px;
+        }
+
+        .stat-card h3 {
+            font-size: 27px;
+            color: var(--dark);
+        }
+
+        .section {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 27px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(80, 65, 25, .035);
+            scroll-margin-top: 25px;
+        }
+
+        .section-heading {
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 9px;
+            color: var(--brown);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #FFFEFA;
+            color: var(--dark);
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #D9B63D;
+            box-shadow: 0 0 0 3px rgba(217, 182, 61, .13);
+        }
+
+        .btn {
+            margin-top: 24px;
+            padding: 14px 23px;
+            border: none;
+            border-radius: 10px;
+            background: #E6C452;
+            color: #403719;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn:hover {
+            background: #D7B23D;
+            transform: translateY(-2px);
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 25px;
+        }
+
+        .result {
+            background: var(--soft);
+            border: 1px solid #F0E2AD;
+            border-radius: 13px;
+            padding: 21px;
+        }
+
+        .result.ai {
+            grid-column: 1 / -1;
+            background: #FFFDF5;
+        }
+
+        .result h3 {
+            font-size: 14px;
+            color: var(--brown);
+            margin-bottom: 12px;
+        }
+
+        .price {
+            font-size: 27px;
+            font-weight: 800;
+            color: #A78320;
+            margin-bottom: 8px;
+        }
+
+        .result p {
+            font-size: 13px;
+            color: var(--brown);
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .ai-label {
+            display: inline-block;
+            background: var(--butter);
+            color: var(--dark);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .error-message {
+            margin-top: 18px;
+            padding: 14px;
+            background: #FFF0F0;
+            border: 1px solid #E8BABA;
+            border-radius: 10px;
+            color: #A33A3A;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th {
+            background: #F8EDC4;
+            color: #665321;
+            padding: 15px;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #F2EEDF;
+            font-size: 13px;
+            color: var(--brown);
+        }
+
+        tbody tr:hover {
+            background: #FFFCF1;
+        }
+
+        td strong {
+            color: var(--dark);
+        }
+
+        .badge-ac {
+            background: #E9F2E4;
+            color: #527345;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-no {
+            background: #F1F0EA;
+            color: #777366;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .chart-box {
+            background: #FFFEFA;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        .chart-image {
+            width: 100%;
+            min-width: 550px;
+            height: auto;
+            display: block;
+        }
+
+        .empty {
+            padding: 20px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            padding: 20px 0 10px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 950px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+                padding: 25px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 18px;
+            }
+
+            .logo-sub, .nav-title, .sidebar-bottom {
+                display: none;
+            }
+
+            .nav-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                margin-top: 15px;
+                padding-bottom: 5px;
+            }
+
+            .nav-menu a {
+                white-space: nowrap;
+                font-size: 12px;
+                padding: 10px 12px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+
+            .topbar {
+                gap: 10px;
+            }
+
+            .topbar h2 {
+                font-size: 19px;
+            }
+
+            .top-label {
+                font-size: 10px;
+                white-space: nowrap;
+            }
+
+            .hero {
+                padding: 27px 22px;
+            }
+
+            .hero h1 {
+                font-size: 25px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-card h3 {
+                font-size: 22px;
+            }
+
+            .form-grid, .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result.ai {
+                grid-column: auto;
+            }
+
+            .section {
+                padding: 20px 16px;
+            }
+            }
+            .ai-content {
+    line-height: 1.8;
+    font-size: 14px;
+    color: #594b32;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.ai-content p {
+    margin-bottom: 12px;
+}
+
+.ai-content ul,
+.ai-content ol {
+    margin: 8px 0 14px 22px;
+}
+
+.ai-content li {
+    margin-bottom: 6px;
+}
+
+.ai-content strong {
+    color: #76551b;
+}
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo">Kos<span>Madiun.</span></div>
+    <div class="logo-sub">SMART PRICE PREDICTION</div>
+
+    <div class="nav-title">MENU UTAMA</div>
+
+    <nav class="nav-menu">
+        <a href="#dashboard" class="active">⌂ Dashboard</a>
+        <a href="#prediksi">✦ Prediksi Harga</a>
+        <a href="#data-kos">▤ Data Kos</a>
+        <a href="#grafik">▥ Grafik</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <strong>KosMadiun</strong><br>
+        Sistem informasi estimasi harga kos di wilayah Madiun berbasis Machine Learning.
+    </div>
+</aside>
+
+<main class="main">
+
+    <div class="topbar" id="dashboard">
+        <div>
+            <h2>Dashboard</h2>
+            <p>Selamat datang di KosMadiun Smart Price Prediction.</p>
+        </div>
+        <div class="top-label">✦ SMART SYSTEM</div>
+    </div>
+
+    <section class="hero">
+        <small>WELCOME TO KOSMADIUN</small>
+        <h1>Temukan Kos yang Sesuai dengan Kebutuhanmu</h1>
+        <p>
+            Sistem prediksi harga kos di wilayah Madiun menggunakan
+            Machine Learning, Fuzzy Logic, dan teknologi AI untuk
+            membantu memberikan estimasi harga berdasarkan jarak,
+            rating, dan fasilitas.
+        </p>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-icon">⌂</div>
+            <p>Total Data Kos</p>
+            <h3>{{ data_kos|length }}</h3>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">▥</div>
+            <p>Wilayah Analisis</p>
+            <h3>Madiun</h3>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">✦</div>
+            <p>Metode Prediksi</p>
+            <h3>ML + Fuzzy</h3>
+        </div>
+    </section>
+
+    <section class="section" id="prediksi">
+        <div class="section-heading">
+            <h2>✦ Prediksi Harga Kos</h2>
+            <p>
+                Masukkan informasi kos untuk mendapatkan estimasi
+                harga menggunakan model Machine Learning.
+            </p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div>
+                    <label for="jarak_km">Jarak dari pusat kota (km)</label>
+                    <input
+                        type="number"
+                        id="jarak_km"
+                        name="jarak_km"
+                        step="0.1"
+                        min="0"
+                        max="20"
+                        required
+                        placeholder="Contoh: 1.5"
+                        value="{{ request.POST.jarak_km|default:'' }}"
+                    >
+                </div>
+
+                <div>
+                    <label for="rating">Rating Kos</label>
+                    <input
+                        type="number"
+                        id="rating"
+                        name="rating"
+                        step="0.1"
+                        min="0"
+                        max="5"
+                        required
+                        placeholder="Contoh: 4.5"
+                        value="{{ request.POST.rating|default:'' }}"
+                    >
+                </div>
+
+                <div>
+                    <label for="ac">Fasilitas AC</label>
+                    <select id="ac" name="ac" required>
+                        <option value="1"
+                            {% if request.POST.ac == '1' or not request.POST.ac %}selected{% endif %}>
+                            Ada AC
+                        </option>
+                        <option value="0"
+                            {% if request.POST.ac == '0' %}selected{% endif %}>
+                            Tidak Ada AC
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">
+                Hitung Prediksi Harga →
+            </button>
+        </form>
+
+        {% if pesan_error %}
+        <div class="error-message">
+            <strong>Terjadi kesalahan:</strong>
+            {{ pesan_error }}
+        </div>
+        {% endif %}
+
+        {% if hasil_prediksi != None %}
+        <div class="result-grid">
+
+            <div class="result">
+                <h3>Hasil Prediksi Machine Learning</h3>
+                <div class="price">
+                    Rp {{ hasil_prediksi_tampil }}
+                </div>
+                <p>
+                    Estimasi harga berdasarkan model Machine Learning.
+                </p>
+            </div>
+
+            {% if hasil_fuzzy %}
+            <div class="result">
+                <h3>Hasil Klasifikasi Fuzzy Logic</h3>
+                <div class="price">
+                    {{ hasil_fuzzy.kategori_fuzzy }}
+                </div>
+                <p>
+                    Nilai fuzzy: {{ hasil_fuzzy.nilai_fuzzy }}
+                </p>
+                <p>
+                    Klasifikasi berdasarkan jarak, rating,
+                    dan fasilitas AC.
+                </p>
+            </div>
+            {% endif %}
+
+            {% if hasil_groq %}
+            <div class="result ai">
+    <h3>✦ Penjelasan AI Groq</h3>
+
+    <div class="ai-content">
+        {{ hasil_groq }}
+    </div>
+</div>
+            {% endif %}
+
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="section" id="data-kos">
+        <div class="section-heading">
+            <h2>▤ Data Kos Madiun</h2>
+            <p>
+                Dataset yang digunakan sebagai sumber data
+                dalam sistem prediksi harga kos.
+            </p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nama Kos</th>
+                        <th>Harga</th>
+                        <th>Jarak (km)</th>
+                        <th>Rating</th>
+                        <th>Fasilitas AC</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for kos in data_kos %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ kos.nama_kos }}</strong></td>
+                        <td>Rp {{ kos.harga_tampil }}</td>
+                        <td>{{ kos.jarak_km }}</td>
+                        <td>★ {{ kos.rating }}</td>
+                        <td>
+                            {% if kos.ac %}
+                                <span class="badge-ac">Tersedia</span>
+                            {% else %}
+                                <span class="badge-no">Tidak tersedia</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty">
+                            Belum ada data kos.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section" id="grafik">
+        <div class="section-heading">
+            <h2>▥ Grafik Perbandingan Harga Kos</h2>
+            <p>
+                Visualisasi data harga kos di wilayah Madiun
+                menggunakan Matplotlib.
+            </p>
+        </div>
+
+        {% if grafik %}
+        <div class="chart-box">
+            <img
+                src="data:image/png;base64,{{ grafik }}"
+                alt="Grafik Perbandingan Harga Kos"
+                class="chart-image"
+            >
+        </div>
+        {% else %}
+        <p class="empty">Grafik belum tersedia.</p>
+        {% endif %}
+    </section>
+
+    <footer>
+        © 2026 KosMadiun | Smart Price Prediction
+        <br>
+        Sistem Informasi Prediksi Harga Kos Berbasis Machine Learning
+    </footer>
+
+</main>
+
+</body>
+</html>
